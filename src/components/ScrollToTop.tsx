@@ -37,7 +37,7 @@ const ScrollToTop = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-mosaic-blue flex items-center justify-center text-white shadow-lg hover:bg-mosaic-blue-dark transition-all ${
+          className={`fixed bottom-6 left-6 z-500 w-12 h-12 rounded-full bg-mosaic-blue flex items-center justify-center text-white shadow-lg hover:bg-mosaic-blue-dark transition-all ${
             isAnimating ? 'animate-bounce' : ''
           }`}
           aria-label="العودة إلى الأعلى"

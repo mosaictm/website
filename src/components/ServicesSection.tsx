@@ -116,7 +116,7 @@ const ServicesSection = () => {
             ctaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <h3 className="text-2xl font-semibold mb-4">جاهزون لبدء مشروعك المميز؟</h3>
+          <h3 className="text-2xl font-semibold mb-4">جاهزون لبدء مشروعك المميز</h3>
           <p className="text-mosaic-gray mb-6 max-w-3xl mx-auto">
             تواصل معنا اليوم للحصول على استشارة مجانية ومناقشة تفاصيل مشروعك.
             فريقنا مستعد لتحويل فكرتك إلى واقع رقمي متميز.

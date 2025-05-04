@@ -10,8 +10,6 @@ import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
 import DynamicBackground from '@/components/DynamicBackground';
-import { ThemeProvider } from '@/hooks/use-theme';
-
 const Index = () => {
   useEffect(() => {
     // Ensure the page starts from the top on initial load
@@ -19,22 +17,19 @@ const Index = () => {
   }, []);
 
   return (
-    <ThemeProvider>
       <div className="min-h-screen bg-background text-foreground relative overflow-x-hidden">
         <DynamicBackground />
         <Header />
-        <div className="snap-container">
+        <div className="snap-container overflow-x-hidden">
           <HeroSection />
           <AboutSection />
           <ServicesSection />
           <PortfolioSection />
-          <TestimonialsSection />
           <ContactSection />
+          <Footer />
         </div>
-        <Footer />
         <ScrollToTop />
       </div>
-    </ThemeProvider>
   );
 };
 

@@ -1,6 +1,9 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import host from '@/imgs/1.png'
+import estate from '@/imgs/2.png'
+import lap from '@/imgs//3.jpeg'
 
 const PortfolioSection = () => {
   // Portfolio categories
@@ -11,51 +14,27 @@ const PortfolioSection = () => {
   const projects = [
     {
       id: 1,
-      title: "متجر إلكتروني متكامل",
+      title: "إدارة مستشفى",
       category: "مواقع ويب",
-      description: "تصميم وتطوير متجر إلكتروني متكامل مع نظام دفع وسلة مشتريات وإدارة منتجات.",
-      image: "https://picsum.photos/id/1488590528505/600/400",
-      tags: ["React", "Node.js", "تجارة إلكترونية"]
+      description: "تطوير موقع ويب لإدارة مستشفى بميزات كاملة",
+      image: host,
+      tags: ["React", "Node.js", "لوحة تحكم"]
     },
     {
       id: 2,
-      title: "تطبيق إدارة المهام",
-      category: "تطبيقات جوال",
-      description: "تطبيق جوال لإدارة المهام والمشاريع بواجهة سهلة الاستخدام وميزات متقدمة.",
-      image: "https://picsum.photos/id/486312338219/600/400",
-      tags: ["React Native", "Firebase", "تطبيق جوال"]
+      title: "بيع وشراء العقارات والممتلكات",
+      category: "مواقع ويب",
+      description: "موقع يمكن الممستخدمين من إيجاد العقارات واستئجارها وبيعها وشرائها",
+      image: estate,
+      tags: ["React", "Firebase", "Interactive Map"]
     },
     {
       id: 3,
-      title: "تصميم هوية بصرية",
+      title: "نمذجة وتصميم لابتوب Lenovo Legion",
       category: "فن رقمي",
-      description: "تصميم هوية بصرية متكاملة لشركة ناشئة تشمل الشعار والألوان والخطوط.",
-      image: "https://picsum.photos/id/1498050108023/600/400",
-      tags: ["تصميم جرافيك", "هوية بصرية"]
-    },
-    {
-      id: 4,
-      title: "موقع شركة استشارية",
-      category: "مواقع ويب",
-      description: "موقع ويب عصري لشركة استشارات مالية مع لوحة تحكم وحجز مواعيد.",
-      image: "https://picsum.photos/id/1605810230434/600/400",
-      tags: ["WordPress", "تصميم تفاعلي"]
-    },
-    {
-      id: 5,
-      title: "تطبيق توصيل طلبات",
-      category: "تطبيقات جوال",
-      description: "تطبيق لتوصيل الطلبات مع نظام تتبع مباشر ونظام تقييم للمندوبين.",
-      image: "https://picsum.photos/id/1487058792275/600/400",
-      tags: ["Flutter", "Google Maps API"]
-    },
-    {
-      id: 6,
-      title: "تصميمات إنفوجرافيك",
-      category: "فن رقمي",
-      description: "سلسلة من تصميمات الإنفوجرافيك لتبسيط البيانات المعقدة بطريقة بصرية جذابة.",
-      image: "https://picsum.photos/id/1519389950473/600/400",
-      tags: ["إنفوجرافيك", "تصميم بصري"]
+      description: "تصميم ونمذجة وتحريك إعلاني ",
+      image: lap,
+      tags: ["نمذجة 3D", "Blender", "3D Art"]
     }
   ];
   

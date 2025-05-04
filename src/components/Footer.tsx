@@ -1,18 +1,17 @@
 
 import { Button } from '@/components/ui/button';
+import logo from '@/imgs/logoDarkTheme.svg'
 
 const Footer = () => {
   return (
-    <footer className="bg-mosaic-dark/95 border-t border-mosaic-blue/10 py-12">
+    <footer className="bg-mosaic-dark/95 border-t border-mosaic-blue/10 py-12 scroll-snap-start scroll-mt-[-1rem] pt-16 md:pt-20">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Logo & About */}
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-mosaic-blue rounded-full flex items-center justify-center shadow-glow">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className="text-white">
-                  <path d="M12,2L4,7.4V16.6L12,22L20,16.6V7.4L12,2M15.5,14.8L13.8,11.8L15.5,8.8L18.2,8.8L19.9,11.8L18.2,14.8H15.5M11.3,14.8L9.6,11.8L11.3,8.8L14,8.8L15.7,11.8L14,14.8H11.3M7.1,14.8L5.4,11.8L7.1,8.8L9.8,8.8L11.5,11.8L9.8,14.8H7.1Z" />
-                </svg>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center shadow-glow">
+                <img src={logo} alt="" />
               </div>
               <span className="text-lg font-bold text-white">Mosaic Team</span>
             </div>

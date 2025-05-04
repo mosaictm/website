@@ -114,7 +114,7 @@
     display: none; /* For Chrome, Safari, and Opera */
   }
   
-  section {
+  footer, section {
     scroll-snap-align: start;
     scroll-margin-top: -1rem;
     @apply pt-16 md:pt-20; /* Decreased top margin for all sections */

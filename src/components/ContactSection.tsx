@@ -92,12 +92,13 @@ const ContactSection = () => {
                   رقم الجوال
                 </label>
                 <Input
+                  dir='ltr'
                   id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+963 XXX XXX XXX"
-                  className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue focus:ring-mosaic-blue"
+                  className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue text-right focus:ring-mosaic-blue"
                 />
               </div>
               
@@ -154,7 +155,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">رقم الهاتف</h4>
-                    <a href="tel:+963968167947" className="text-mosaic-blue hover:underline">
+                    <a href="tel:+963968167947" className="text-mosaic-blue hover:underline" dir='ltr'>
                       +963 968 167 947
                     </a>
                   </div>
@@ -189,7 +190,7 @@ const ContactSection = () => {
                 </a>
                 
                 <a 
-                  href="https://www.instagram.com/mosaic_tm_" 
+                  href="https://www.instagram.com/mosaictm_" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-mosaic-blue/10 flex items-center justify-center text-mosaic-blue hover:bg-mosaic-blue hover:text-white transition-colors"

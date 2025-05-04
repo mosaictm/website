@@ -65,7 +65,7 @@ export default {
 				},
 				mosaic: {
 					blue: {
-						light: '#3399FF',
+						light: '#4AA8FF',
 						DEFAULT: '#276EFF',
 						dark: '#1A4FD8',
 					},
