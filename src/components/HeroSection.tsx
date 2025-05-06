@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import logoCropped from '@/imgs/logoCropped.svg';
+import logoCropped from '@/imgs/logoPNG.png';
 
 const HeroSection = () => {
   const { ref: textRef, isVisible: textVisible } = useScrollAnimation<HTMLDivElement>();
