@@ -322,3 +322,18 @@
 .parallax-element {
   animation: parallax-shift 8s ease-in-out infinite;
 }
+
+/*@layer utilities {
+  @keyframes fadeOnly {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-only {
+    animation: fadeOnly 0.5s ease-out forwards;
+  }
+}*/

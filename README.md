@@ -1,73 +1,33 @@
-# Welcome to your Lovable project
+all links need smooth snap scrolling(the quick links and the logo link dont have it)
 
-## Project info
+add links for social media
 
-**URL**: https://lovable.dev/projects/40c18f0d-04b1-4c19-98d5-681d6524d47d
+fix جميع المشاريع button(a pop up window that has all the projects on slideshow or delete the whole button maybe)
 
-## How can I edit this code?
+fix the slideshow in the projects pop up(only the first photo shows), there maybe is a fixed number of photos which gives a fixed number of placeholders in the slideshow
 
-There are several ways of editing your application.
+the تواصل معنا  button that is in the خدماتنا section doesnt do a thing
 
-**Use Lovable**
+two تواصل معنا  buttons one in the hero and one in the nav bar which gives bad ux design
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/40c18f0d-04b1-4c19-98d5-681d6524d47d) and start prompting.
+the شهادات العملاء button needs to be replaced
 
-Changes made via Lovable will be committed automatically to this repo.
+the اكتشف المزيد  button in  خدماتنا needs to be addressed
 
-**Use your preferred IDE**
+the تعرف علينا button in the hero section and the تعرف على فريقنا in the من نحن  section need functionality
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+should add actual terms and services to the footer
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+should add actual projects in the mobile apps section
 
-Follow these steps:
+must host the projects on vercel             or you go to jail
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+the address should be changed to درعا/دمشق since we want local attention at first
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+the blog section should be redone
 
-# Step 3: Install the necessary dependencies.
-npm i
+should add more projects (3 of every kind seems perfect)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/40c18f0d-04b1-4c19-98d5-681d6524d47d) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

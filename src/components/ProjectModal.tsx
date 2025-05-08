@@ -1,9 +1,6 @@
-// src/components/ProjectModal.tsx
-import React, { useState, useEffect, useCallback } from 'react'; // Added useState, useCallback
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'; // Added Chevron icons
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay'; // Import Autoplay plugin
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Define the structure of your project data for TypeScript
 export interface Project {
@@ -11,177 +8,217 @@ export interface Project {
     title: string;
     category: string;
     description: string;
-    image: string;
-    screenshots?: string[];
+    image: string; // Main image for project card
+    screenshots?: string[]; // Array of screenshot URLs for the modal
     liveLink?: string | null;
     tags: string[];
-  }
+}
 
 // Define the props expected by the ProjectModal component
 interface ProjectModalProps {
-  project: Project | null;
-  onClose: () => void;
+    project: Project | null;
+    onClose: () => void;
 }
 
 const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
-  // --- Embla Carousel Setup ---
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: 'start' }, // Loop enabled, align slides to start
-    [Autoplay({ delay: 4000, stopOnInteraction: true })] // Autoplay plugin
-  );
-  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
-  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+    const [currentScreenshotIndex, setCurrentScreenshotIndex] = useState(0);
 
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+    // Reset to the first screenshot when the project changes or modal opens
+    useEffect(() => {
+        setCurrentScreenshotIndex(0);
+    }, [project]);
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setPrevBtnDisabled(!emblaApi.canScrollPrev());
-    setNextBtnDisabled(!emblaApi.canScrollNext());
-  }, [emblaApi, setSelectedIndex]);
+    useEffect(() => {
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
 
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect(); // Call on init
-    emblaApi.on('select', onSelect); // Re-run when slide changes
-    emblaApi.on('reInit', onSelect); // Re-run on re-initialization
-    // Cleanup
-    return () => {
-      emblaApi.off('select', onSelect);
-      emblaApi.off('reInit', onSelect);
+    const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
     };
-  }, [emblaApi, onSelect]);
-  // --- End Embla Carousel Setup ---
 
-  useEffect(() => {
-    // Prevent body scroll when modal is open
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'unset';
+    const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
     };
-  }, []);
 
-  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
+    if (!project) {
+        return null;
     }
-  };
 
-  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent clicks inside the modal from closing it
-    e.stopPropagation();
-  };
+    const hasScreenshots = project.screenshots && project.screenshots.length > 0;
+    const numScreenshots = hasScreenshots ? project.screenshots!.length : 0;
 
-  if (!project) {
-    return null;
-  }
+    const handleNextScreenshot = () => {
+        if (numScreenshots > 0) {
+            setCurrentScreenshotIndex((prevIndex) => (prevIndex + 1) % numScreenshots);
+        }
+    };
 
-  console.log(project);
-  
+    const handlePrevScreenshot = () => {
+        if (numScreenshots > 0) {
+            setCurrentScreenshotIndex((prevIndex) => (prevIndex - 1 + numScreenshots) % numScreenshots);
+        }
+    };
 
-  const hasScreenshots = project.screenshots && project.screenshots.length > 0;
+    const handleThumbnailClick = (index: number) => {
+        setCurrentScreenshotIndex(index);
+    };
+    
+    // Determine the current image to display
+    // Fallback to project.image if no screenshots or if something is wrong.
+    let currentImageSrc = project.image; // Default to main project image
+    if (hasScreenshots && project.screenshots![currentScreenshotIndex]) {
+        currentImageSrc = project.screenshots![currentScreenshotIndex];
+    } else if (hasScreenshots && project.screenshots!.length > 0) {
+        // Fallback to the first screenshot if index is somehow out of bounds
+        currentImageSrc = project.screenshots![0];
+    }
 
-  console.log("Modal Screenshots:", project?.screenshots);
-  
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in"
-      onClick={handleOutsideClick}
-    >
-      {/* Modal Content Box */}
-      <div
-        // REMOVED h-full, added max-h-[95vh] for mobile safety
-        className="bg-mosaic-dark w-full max-h-[95vh] sm:h-auto sm:max-h-[90vh] sm:max-w-3xl rounded-lg shadow-xl flex flex-col border border-mosaic-blue/20 overflow-hidden"
-        onClick={handleContentClick}
-      >
-        {/* Close Button Row */}
-        <div className="flex justify-start p-2 border-b border-mosaic-blue/10 flex-shrink-0">
-          <button
-            onClick={onClose}
-            className="text-mosaic-gray hover:text-white p-1 rounded-full hover:bg-mosaic-blue/30 transition-colors"
-            aria-label="Close modal"
-          >
-            <X size={24} />
-          </button>
-        </div>
 
-        {/* Main Scrollable Content Area */}
-        <div className="flex flex-col flex-grow overflow-y-auto">
-          {/* Header */}
-          <div className="p-6 flex-shrink-0">
-            <h2 className="text-2xl font-bold mb-2 text-white">{project.title}</h2>
-            <p className="text-mosaic-gray text-sm">{project.description}</p>
-          </div>
+    console.log("Modal Project Data:", project);
+    console.log("Modal Screenshots Array:", project?.screenshots);
+    console.log("Current Screenshot Index:", currentScreenshotIndex);
+    console.log("Current Image SRC:", currentImageSrc);
 
-          {/* Body (Screenshots - Now Embla Carousel) */}
-          <div className="px-6 pt-2 pb-6 flex-grow"> {/* Adjusted padding */}
-            <h3 className="text-lg font-semibold mb-4 text-white">لقطات من المشروع</h3>
 
-            {hasScreenshots ? (
-              <div className="relative"> {/* Added relative positioning for buttons */}
-                {/* Embla Carousel Structure */}
-                <div className="overflow-hidden rounded-md border border-mosaic-blue/10" ref={emblaRef}>
-                  <div className="flex"> {/* Embla container */}
-                    {project.screenshots!.map((screenshotUrl, index) => (
-                      <div className="flex-[0_0_100%] min-w-0 aspect-video" key={index}> {/* Embla slide */}
-                        <img
-                          src={screenshotUrl}
-                          alt={`${project.title} Screenshot ${index + 1}`}
-                          className="w-full h-full object-cover" // Ensure image covers slide area
-                        />
-                      </div>
-                    ))}
-                  </div>
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in"
+            onClick={handleOutsideClick}
+        >
+            {/* Modal Content Box */}
+            <div
+                className="bg-mosaic-dark w-full max-h-[95vh] sm:h-auto sm:max-h-[90vh] sm:max-w-3xl rounded-lg shadow-xl flex flex-col border border-mosaic-blue/20 overflow-hidden"
+                onClick={handleContentClick}
+            >
+                {/* Close Button Row */}
+                <div className="flex justify-start p-2 border-b border-mosaic-blue/10 flex-shrink-0">
+                    <button
+                        onClick={onClose}
+                        className="text-mosaic-gray hover:text-white p-1 rounded-full hover:bg-mosaic-blue/30 transition-colors"
+                        aria-label="Close modal"
+                    >
+                        <X size={24} />
+                    </button>
                 </div>
 
-                {/* Prev Button */}
-                 <button
-                  className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-opacity duration-300 disabled:opacity-30 disabled:cursor-not-allowed z-10"
-                  onClick={scrollPrev}
-                  disabled={prevBtnDisabled}
-                  aria-label="Previous Screenshot"
-                 >
-                  <ChevronLeft size={24} />
-                 </button>
+                {/* Main Scrollable Content Area */}
+                <div className="flex flex-col flex-grow overflow-y-auto scrollbar-hide">
+                    {/* Header */}
+                    <div className="p-6 flex-shrink-0">
+                        <h2 className="text-2xl font-bold mb-2 text-white">{project.title}</h2>
+                        <p className="text-mosaic-gray text-sm">{project.description}</p>
+                    </div>
 
-                 {/* Next Button */}
-                 <button
-                   className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-opacity duration-300 disabled:opacity-30 disabled:cursor-not-allowed z-10"
-                   onClick={scrollNext}
-                   disabled={nextBtnDisabled}
-                   aria-label="Next Screenshot"
-                 >
-                   <ChevronRight size={24} />
-                 </button>
+                    {/* Body (Screenshots - Custom Slider) */}
+                    <div className="px-6 pt-2 pb-6 flex-grow">
+                        <h3 className="text-lg font-semibold mb-4 text-white">لقطات من المشروع</h3>
 
-              </div>
-            ) : (
-              <p className="text-mosaic-gray italic">لا توجد لقطات متاحة.</p>
-            )}
-          </div>
+                        {hasScreenshots ? (
+                            <div className="relative">
+                                {/* Main Image Display */}
+                                <div className="aspect-video bg-black/20 rounded-md border border-mosaic-blue/10 overflow-hidden mb-4">
+                                    {currentImageSrc ? (
+                                        <img loading="lazy"
+                                            // IMPORTANT: Use a key that changes when the src changes to force re-render if needed
+                                            key={currentImageSrc} 
+                                            src={currentImageSrc}
+                                            alt={`${project.title} Screenshot ${currentScreenshotIndex + 1}`}
+                                            className="w-full h-full object-contain" // Use object-contain to see the whole image
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-mosaic-gray">
+                                            صورة غير متوفرة
+                                        </div>
+                                    )}
+                                </div>
 
-          {/* Footer (Link) */}
-          {project.liveLink && (
-            <div className="p-6 border-t border-mosaic-blue/10 mt-auto flex-shrink-0">
-               <a
-                  href={project.liveLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-block"
-               >
-                  <Button className="w-full bg-mosaic-blue hover:bg-opacity-80 text-white">
-                      زيارة الموقع التجريبي
-                  </Button>
-               </a>
+                                {/* Navigation Buttons (only if more than one screenshot) */}
+                                {numScreenshots > 1 && (
+                                    <div className="flex justify-center items-center gap-4 mb-4">
+                                       <button
+                                            className="bg-mosaic-blue/30 hover:bg-mosaic-blue/50 text-white p-2 rounded-full transition-colors"
+                                            onClick={handlePrevScreenshot}
+                                            aria-label="Previous Screenshot"
+                                        >
+                                            <ChevronRight size={24} />
+                                        </button>
+                                       
+                                        <span className="text-mosaic-gray text-sm">
+                                        {numScreenshots} / {currentScreenshotIndex + 1}
+                                        </span>
+                                        <button
+                                            className="bg-mosaic-blue/30 hover:bg-mosaic-blue/50 text-white p-2 rounded-full transition-colors"
+                                            onClick={handleNextScreenshot}
+                                            aria-label="Next Screenshot"
+                                        >
+                                            <ChevronLeft size={24} />
+                                        </button>
+                                    </div>
+                                )}
+
+                                {/* Thumbnails (only if more than one screenshot) */}
+                                {numScreenshots > 1 && (
+                                    <div className="flex flex-wrap justify-center gap-2">
+                                        {project.screenshots!.map((screenshotUrl, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleThumbnailClick(index)}
+                                                className={`w-20 h-16 rounded border-2 overflow-hidden
+                                                            ${index === currentScreenshotIndex ? 'border-mosaic-blue' : 'border-transparent hover:border-mosaic-gray/50'}`}
+                                                aria-label={`View screenshot ${index + 1}`}
+                                            >
+                                                <img loading="lazy"
+                                                    src={screenshotUrl}
+                                                    alt={`Thumbnail ${index + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+
+                            </div>
+                        ) : (
+                            <p className="text-mosaic-gray italic">لا توجد لقطات متاحة. (أو يعرض صورة المشروع الرئيسية)</p>
+                        )}
+                         {/* Display main project image if no screenshots available */}
+                        {!hasScreenshots && project.image && (
+                             <div className="aspect-video bg-black/20 rounded-md border border-mosaic-blue/10 overflow-hidden">
+                                <img loading="lazy"
+                                    src={project.image}
+                                    alt={project.title}
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+
+                    {/* Footer (Link) */}
+                    {project.liveLink && (
+                        <div className="p-6 border-t border-mosaic-blue/10 mt-auto flex-shrink-0">
+                            <a
+                                href={project.liveLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full inline-block"
+                            >
+                                <Button className="w-full bg-mosaic-blue hover:bg-opacity-80 text-white">
+                                    زيارة الموقع التجريبي
+                                </Button>
+                            </a>
+                        </div>
+                    )}
+                </div>
             </div>
-          )}
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ProjectModal;
