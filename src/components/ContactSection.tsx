@@ -128,7 +128,6 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     setTimeout(() => {
       toast({
         title: "تم إرسال الرسالة بنجاح",
@@ -308,7 +307,7 @@ const ContactSection = () => {
             </div>
             
             {/* Social Media */}
-            <div>
+            <div className="mr-3">
               <h3 className="text-xl font-bold mb-4">تابعنا على</h3>
               <div className="flex space-x-4 space-x-reverse">
                 <a 
