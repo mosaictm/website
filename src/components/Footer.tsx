@@ -81,7 +81,7 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="بريدك الإلكتروني"
-                className="bg-mosaic-dark border border-mosaic-blue/20 focus:border-mosaic-blue rounded-r-none rounded-l-md px-4 py-2 w-full text-sm focus:outline-none"
+                className="bg-mosaic-dark border border-mosaic-blue/20 focus:border-mosaic-blue rounded-r-none rounded-l-md px-4 py-2 w-1/2 md:w-full text-sm focus:outline-none"
               />
               <Button className="rounded-r-md rounded-l-none bg-mosaic-blue hover:bg-mosaic-blue-dark border-mosaic-blue">
                 اشتراك

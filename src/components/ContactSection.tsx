@@ -1,10 +1,97 @@
-
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { PhoneIcon, MailIcon, MapPinIcon } from 'lucide-react';
+
+// Define the type for focusable elements
+type FocusableInteractiveElement = HTMLInputElement | HTMLTextAreaElement;
+
+// Define the position change handler factory function outside the component
+function createPositionChangeFocusHandler() {
+  let lastKnownPosition: { x: number; y: number } | null = null;
+  let lastActiveInputElement: FocusableInteractiveElement | null = null;
+
+  const handleHideSuggestionsOnMove = () => {
+    const activeElement: Element | null = document.activeElement;
+
+    // 1. Type Guard: Check if the active element is an instance of HTMLInputElement or HTMLTextAreaElement.
+    if (
+      !(activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement)
+    ) {
+      // If no relevant input is active, or something else is active, reset our tracking.
+      lastActiveInputElement = null;
+      lastKnownPosition = null;
+      return;
+    }
+
+    // TypeScript now knows activeElement is FocusableInteractiveElement
+    const activeInput: FocusableInteractiveElement = activeElement;
+
+    // 2. If the focused input has changed since the last check,
+    // or if this is the first time we're tracking this specific input.
+    if (lastActiveInputElement !== activeInput) {
+      lastActiveInputElement = activeInput;
+      const rect = activeInput.getBoundingClientRect();
+      lastKnownPosition = { x: rect.x, y: rect.y };
+      // console.log('Now tracking:', activeInput.id || activeInput.name, 'at', lastKnownPosition);
+      return; // Don't do anything else on the first focus of this element
+    }
+
+    // 3. If we are here, the same input is still focused. Check its current position.
+    const currentRect = activeInput.getBoundingClientRect();
+
+    // 4. Compare current position with the last known position
+    if (
+      lastKnownPosition &&
+      (currentRect.x !== lastKnownPosition.x || currentRect.y !== lastKnownPosition.y)
+    ) {
+      // console.log(
+      //   'Input moved!',
+      //   activeInput.id || activeInput.name || activeInput,
+      //   'from',
+      //   lastKnownPosition,
+      //   'to',
+      //   { x: currentRect.x, y: currentRect.y }
+      // );
+
+      // Preserve cursor position if possible
+      let selectionStart: number | null = null;
+      let selectionEnd: number | null = null;
+      try {
+        selectionStart = activeInput.selectionStart;
+        selectionEnd = activeInput.selectionEnd;
+      } catch (e) {
+        // Some input types might not support selectionStart/End or throw errors
+      }
+
+      activeInput.blur();
+
+      // Refocus. Using requestAnimationFrame for robustness.
+      requestAnimationFrame(() => {
+        activeInput.focus({ preventScroll: true }); // <--- FIX: Prevents scrolling on focus
+
+        // Restore cursor position
+        if (typeof selectionStart === 'number' && typeof selectionEnd === 'number') {
+          try {
+            activeInput.setSelectionRange(selectionStart, selectionEnd);
+          } catch (e) {
+            // Ignore if setting selection range fails
+          }
+        }
+        // console.log('Refocused:', activeInput.id || activeInput.name);
+      });
+
+      // Update the last known position to the new one
+      lastKnownPosition = { x: currentRect.x, y: currentRect.y };
+    }
+  };
+
+  return handleHideSuggestionsOnMove;
+}
+
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -21,15 +108,31 @@ const ContactSection = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
+  // useEffect to manage the event listeners for the position change handler
+  useEffect(() => {
+    // Create the handler instance when the component mounts
+    const moveHandler = createPositionChangeFocusHandler();
+
+    // Attach the handler to events that might cause element movement
+    window.addEventListener('scroll', moveHandler, true);
+    window.addEventListener('resize', moveHandler, true);
+
+    // Cleanup function: Remove event listeners when the component unmounts
+    return () => {
+      window.removeEventListener('scroll', moveHandler, true);
+      window.removeEventListener('resize', moveHandler, true);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once on mount and unmounts on cleanup
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
     setTimeout(() => {
       toast({
         title: "تم إرسال الرسالة بنجاح",
         description: "سنقوم بالرد عليكم في أقرب وقت ممكن.",
+        className: "bg-mosaic-blue",
       });
       
       setFormData({
@@ -42,7 +145,7 @@ const ContactSection = () => {
       setIsSubmitting(false);
     }, 1500);
   };
-  
+
   return (
     <section id="contact" className="bg-mosaic-dark py-20">
       <div className="container-section">
@@ -53,8 +156,20 @@ const ContactSection = () => {
           <div className="bg-mosaic-dark/50 border border-mosaic-blue/10 rounded-lg p-6 md:p-8 animate-fade-in">
             <h3 className="text-2xl font-bold mb-6">أرسل لنا رسالة</h3>
             
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                 <input
+                      type="text"
+                      name="prevent_autofill" 
+                      id="prevent_autofill_contact" 
+                      autoComplete="off" 
+                      style={{ display: 'none' }}
+                      tabIndex={-1} 
+                      aria-hidden="true" 
+                      value="" 
+                      readOnly 
+                      onChange={()=>{}} // React requires onChange for controlled inputs even if readOnly
+                      />
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-2">
                     الاسم الكامل
@@ -62,8 +177,11 @@ const ContactSection = () => {
                   <Input
                     id="name"
                     name="name"
+                    minLength={5}
+                    maxLength={30}
                     value={formData.name}
                     onChange={handleChange}
+                    autoComplete="off"
                     placeholder="أدخل اسمك الكامل"
                     required
                     className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue focus:ring-mosaic-blue"
@@ -78,15 +196,18 @@ const ContactSection = () => {
                     id="email"
                     name="email"
                     type="email"
+                    autoComplete="off"
+                    minLength={5}
+                    maxLength={70}
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="example@email.com"
+                    placeholder="example@gmail.com"
                     required
                     className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue focus:ring-mosaic-blue"
                   />
                 </div>
               </div>
-              
+             
               <div className="mb-6">
                 <label htmlFor="phone" className="block text-sm font-medium mb-2">
                   رقم الجوال
@@ -95,13 +216,17 @@ const ContactSection = () => {
                   dir='ltr'
                   id="phone"
                   name="phone"
+                  autoComplete="off"
+                  minLength={9}
+                  maxLength={15}
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+963 XXX XXX XXX"
+                  required
                   className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue text-right focus:ring-mosaic-blue"
                 />
               </div>
-              
+             
               <div className="mb-6">
                 <label htmlFor="message" className="block text-sm font-medium mb-2">
                   الرسالة
@@ -109,12 +234,19 @@ const ContactSection = () => {
                 <Textarea
                   id="message"
                   name="message"
+                  autoComplete="off"
+                  maxLength={1000}
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="اكتب رسالتك هنا..."
                   rows={5}
                   required
-                  className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue focus:ring-mosaic-blue"
+                  onInput={(e) => {
+                    const target = e.currentTarget;
+                    target.style.height = "auto";
+                    target.style.height = `${target.scrollHeight}px`;
+                  }}
+                  className="bg-mosaic-dark/70 border-mosaic-blue/20 focus:border-mosaic-blue focus:ring-mosaic-blue scrollbar-hide resize-none max-h-72 py-4"
                 />
               </div>
               
@@ -168,7 +300,7 @@ const ContactSection = () => {
                   <div>
                     <h4 className="font-semibold mb-1">العنوان</h4>
                     <p className="text-mosaic-gray">
-                      سوريا، دمشق
+                      سوريا، درعا/دمشق
                     </p>
                   </div>
                 </div>
@@ -176,7 +308,7 @@ const ContactSection = () => {
             </div>
             
             {/* Social Media */}
-            <div>
+            <div className="">
               <h3 className="text-xl font-bold mb-4">تابعنا على</h3>
               <div className="flex space-x-4 space-x-reverse">
                 <a 
