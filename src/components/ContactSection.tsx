@@ -132,7 +132,7 @@ const ContactSection = () => {
       toast({
         title: "تم إرسال الرسالة بنجاح",
         description: "سنقوم بالرد عليكم في أقرب وقت ممكن.",
-        className: "bg-mosaic-blue text-white border-green-600 dark:bg-green-600 dark:border-green-700",
+        className: "bg-mosaic-blue",
       });
       
       setFormData({
@@ -308,8 +308,8 @@ const ContactSection = () => {
             </div>
             
             {/* Social Media */}
-            <div className="pl-4">
-              <h3 className="text-xl text-right font-bold mb-4">تابعنا على</h3>
+            <div className="">
+              <h3 className="text-xl font-bold mb-4">تابعنا على</h3>
               <div className="flex space-x-4 space-x-reverse">
                 <a 
                   href="#" 
