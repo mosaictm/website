@@ -30,7 +30,7 @@ const Index = () => {
           <PortfolioSection />
           {/* <TestimonialsSection /> */} {/* Uncomment if you have this component */}
           <ContactSection />
-          
+          <Footer />
         </div>
         <ScrollToTop />
       </div>
