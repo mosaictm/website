@@ -26,7 +26,7 @@ const Header = () => {
     { name: 'من نحن', href: '#about' },
     { name: 'خدماتنا', href: '#services' },
     { name: 'أعمالنا', href: '#portfolio' },
-    { name: 'شهادات العملاء', href: '#testimonials' },
+   // { name: 'شهادات العملاء', href: '#testimonials' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -45,7 +45,10 @@ const Header = () => {
     >
       <div className="container mx-auto py-4 px-6">
         <div className="flex justify-between items-center">
-          <a href="#home" className="flex items-center gap-2">
+          <a href="#home" className="flex items-center gap-2" onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("#home");
+                }}>
             <div className="w-10 h-10 rounded-full flex items-center justify-center">
               <img src={logoDarkTheme} alt="logo" />
             </div>
