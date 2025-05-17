@@ -308,7 +308,7 @@ const ContactSection = () => {
             </div>
             
             {/* Social Media */}
-            <div className="ml-12 lg:ml-8">
+            <div className="">
               <h3 className="text-xl font-bold mb-4">تابعنا على</h3>
               <div className="flex space-x-4 space-x-reverse">
                 <a 
